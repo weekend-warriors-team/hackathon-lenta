@@ -1,5 +1,5 @@
 from djoser.views import UserViewSet as DjoserUserViewSet
-from sales_forecasts.models import User
+from sales.models import User
 
 from .serializers import UserSerializer
 
