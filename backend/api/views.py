@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from djoser.views import UserViewSet as DjoserUserViewSet
+from sales_forecasts.models import User
 
-# Create your views here.
+from .serializers import UserSerializer
+
+
+class UserViewSet(DjoserUserViewSet):
+    """Вьюсет для работы с пользователями"""
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
