@@ -9,9 +9,9 @@ data_dir = settings.BASE_DIR/'initial_data'
 
 csv_files = [
     {'model': Group, 'filename': 'pr_df.csv',
-     'fieldnames': ['sku', 'title']},
-    #{'model': Genre, 'filename': 'genre.csv',
-    # 'fieldnames': ['id', 'name', 'slug']},
+     'fieldnames': ['pass', 'title']},
+    {'model': Category, 'filename': 'pr_df.csv',
+     'fieldnames': ['pass', 'group', 'title']},
     #{'model': Title, 'filename': 'titles.csv',
     # 'fieldnames': ['id', 'name', 'year', 'category_id']},
     #{'model': Review, 'filename': 'review.csv',
@@ -25,30 +25,44 @@ csv_files = [
 class Command(BaseCommand):
     help = "Загружает данные из файлов csv"
 
+    def add_group(self, row):
+        """Создает или обновляет группу."""
+        Group.objects.update_or_create(title=row['title'],)
+
+    def add_category(self, row):
+        """Создает или обновляет категорию."""
+        Category.objects.update_or_create(
+            title=row['title'],
+            group=Group.objects.filter(title=row['group']).first(),
+        )
+
     def csv_loader(self, cf):
         csv_file = f'{data_dir}\\{cf["filename"]}'
         with open(csv_file, encoding='utf-8', newline='') as csvfile:
             reader = DictReader(csvfile, fieldnames=cf['fieldnames'])
             print(f'Загрузка в таблицу модели {cf["model"].__name__}')
 
-            i, err, r = 0, 0, 0
+            if cf['model'] == Group:
+                create_func = self.add_group
+            elif cf['model'] == Category:
+                create_func = self.add_category
 
+            i, err, r = 0, 0, 0
+            next(reader)
             for row in reader:
-                if i != 0:
-                    try:
-                        cf['model'].objects.update_or_create(
-                            title=row['title'],)
-                        r += 1
-                    except Exception as error:
-                        print(row)
-                        print(
-                            f'Ошибка записи в таблицу модели '
-                            f'{cf["model"].__name__}, '
-                            f'{str(error)}')
-                        err += 1
+                try:
+                    create_func(row)
+                    r += 1
+                except Exception as error:
+                    print(row)
+                    print(
+                        f'Ошибка записи в таблицу модели '
+                        f'{cf["model"].__name__}, '
+                        f'{str(error)}')
+                    err += 1
                 i += 1
             print(
-                f'Всего: {i-1} строк. Загружено: {r} строк. '
+                f'Всего: {i} строк. Загружено: {r} строк. '
                 f'Ошибки: {err} строк.')
 
     def handle(self, *args, **options):
