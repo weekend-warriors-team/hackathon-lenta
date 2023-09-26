@@ -51,6 +51,7 @@ class Subcategory(models.Model):
         verbose_name='Категория',
         on_delete=models.CASCADE,
         related_name='subcategories',
+        to_field='title',
     )
 
     class Meta:

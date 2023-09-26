@@ -12,8 +12,8 @@ csv_files = [
      'fieldnames': ['pass', 'title']},
     {'model': Category, 'filename': 'pr_df.csv',
      'fieldnames': ['pass', 'group', 'title']},
-    #{'model': Title, 'filename': 'titles.csv',
-    # 'fieldnames': ['id', 'name', 'year', 'category_id']},
+    {'model': Subcategory, 'filename': 'pr_df.csv',
+     'fieldnames': ['pass', 'pass', 'category', 'title']},
     #{'model': Review, 'filename': 'review.csv',
     # 'fieldnames': ['id', 'title_id', 'text',
     #                'author_id', 'score', 'pub_date']},
@@ -36,6 +36,13 @@ class Command(BaseCommand):
             group=Group.objects.filter(title=row['group']).first(),
         )
 
+    def add_subcategory(self, row):
+        """Создает или обновляет подкатегорию."""
+        Subcategory.objects.update_or_create(
+            title=row['title'],
+            category=Category.objects.filter(title=row['category']).first(),
+        )
+
     def csv_loader(self, cf):
         csv_file = f'{data_dir}\\{cf["filename"]}'
         with open(csv_file, encoding='utf-8', newline='') as csvfile:
@@ -46,6 +53,8 @@ class Command(BaseCommand):
                 create_func = self.add_group
             elif cf['model'] == Category:
                 create_func = self.add_category
+            elif cf['model'] == Subcategory:
+                create_func = self.add_subcategory
 
             i, err, r = 0, 0, 0
             next(reader)
