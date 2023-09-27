@@ -4,9 +4,9 @@ from .models import Category, Group, Product, Subcategory
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('title',)
+    list_display = ('title', 'group')
     search_fields = ('title',)
-    list_filter = ('title',)
+    list_filter = ('group',)
 
 
 class GroupAdmin(admin.ModelAdmin):
@@ -16,15 +16,15 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('sku',)
+    list_display = ('sku', 'subcategory', 'uom')
     search_fields = ('sku',)
-    list_filter = ('sku',)
+    list_filter = ('subcategory', 'uom')
 
 
 class SubcategoryAdmin(admin.ModelAdmin):
-    list_display = ('title',)
+    list_display = ('title', 'category')
     search_fields = ('title',)
-    list_filter = ('title',)
+    list_filter = ('category',)
 
 
 admin.site.register(Category, CategoryAdmin)
