@@ -14,11 +14,8 @@ csv_files = [
      'fieldnames': ['pass', 'group', 'title']},
     {'model': Subcategory, 'filename': 'pr_df.csv',
      'fieldnames': ['pass', 'pass', 'category', 'title']},
-    #{'model': Review, 'filename': 'review.csv',
-    # 'fieldnames': ['id', 'title_id', 'text',
-    #                'author_id', 'score', 'pub_date']},
-    #{'model': Comment, 'filename': 'comments.csv',
-    # 'fieldnames': ['id', 'review_id', 'text', 'author_id', 'pub_date']},
+    {'model': Product, 'filename': 'pr_df.csv',
+     'fieldnames': ['sku', 'pass', 'pass', 'subcategory', 'uom']},
 ]
 
 
@@ -43,6 +40,14 @@ class Command(BaseCommand):
             category=Category.objects.filter(title=row['category']).first(),
         )
 
+    def add_product(self, row):
+        """Создает или обновляет продукт."""
+        Product.objects.update_or_create(
+            sku=row['sku'],
+            subcategory=Subcategory.objects.filter(title=row['subcategory']).first(),
+            uom=row['uom'],
+        )
+
     def csv_loader(self, cf):
         csv_file = f'{data_dir}\\{cf["filename"]}'
         with open(csv_file, encoding='utf-8', newline='') as csvfile:
@@ -55,6 +60,8 @@ class Command(BaseCommand):
                 create_func = self.add_category
             elif cf['model'] == Subcategory:
                 create_func = self.add_subcategory
+            elif cf['model'] == Product:
+                create_func = self.add_product
 
             i, err, r = 0, 0, 0
             next(reader)

@@ -74,6 +74,7 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name='products',
+        to_field='title',
     )
     uom = models.SmallIntegerField(
         verbose_name='Маркер единицы измерения',
