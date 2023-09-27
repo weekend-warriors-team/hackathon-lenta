@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'categories.apps.CategoriesConfig',
     'stores.apps.StoresConfig',
     'users.apps.UsersConfig',
+    'forecast.apps.ForecastConfig',
 ]
 
 MIDDLEWARE = [
