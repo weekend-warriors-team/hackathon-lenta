@@ -129,6 +129,7 @@ env.bak/
 venv.bak/
 .vscode
 vscode/
+backend/initial_data/*
 initial_data/*
 # Spyder project settings
 .spyderproject
