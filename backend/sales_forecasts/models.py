@@ -3,7 +3,7 @@ from django.db import models
 
 User = get_user_model()
 
-    
+
 class Group(models.Model):
     """Модель групы товаров."""
     title = models.CharField(
@@ -29,6 +29,7 @@ class Category(models.Model):
         verbose_name='Группа',
         on_delete=models.CASCADE,
         related_name='categories',
+        to_field='title',
     )
 
     class Meta:
@@ -50,6 +51,7 @@ class Subcategory(models.Model):
         verbose_name='Категория',
         on_delete=models.CASCADE,
         related_name='subcategories',
+        to_field='title',
     )
 
     class Meta:
@@ -78,6 +80,6 @@ class Product(models.Model):
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
         ordering = ['sku']
-    
+
     def __str__(self):
         return self.sku
