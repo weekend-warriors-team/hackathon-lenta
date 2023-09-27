@@ -75,6 +75,10 @@ class Product(models.Model):
         null=True,
         related_name='products',
     )
+    uom = models.SmallIntegerField(
+        verbose_name='Маркер единицы измерения',
+        default=1,
+    )
 
     class Meta:
         verbose_name = 'Продукт'
