@@ -1,90 +1,59 @@
-from django.contrib.auth import get_user_model
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
-User = get_user_model()
+from stores.models import Store
+from categories.models import Category
 
 
-class Group(models.Model):
-    """Модель групы товаров."""
-    title = models.CharField(
-        max_length=75, verbose_name='Название группы', unique=True
+class Forecast(models.Model):
+    '''Модель данных прогноза'''
+    store = models.ForeignKey(Store,
+                              on_delete=models.CASCADE
+                              )
+    forecast_date = models.DateField(
+        verbose_name='Дата прогноза'
     )
 
+    def clean(self):
+        if self.forecast_date < timezone.now().date():
+            raise ValidationError(
+                'Дата прогноза не может быть в прошлом'
+                )
+    
     class Meta:
-        verbose_name = 'Группа'
-        verbose_name_plural = 'Группы'
-        ordering = ['title']
+        verbose_name='Прогноз магазина'
+        verbose_name_plural='Прогнозы магазинов'
 
     def __str__(self):
-        return self.title
+        return f'{self.store}-{self.forecast_date}'
+    
+
+class ForecastSku(models.Model):
+    '''Модель прогноза товара'''
+    forecast = models.ForeignKey(Forecast,
+                                 on_delete=models.CASCADE
+                                 )
+    sku = models.ForeignKey(Category,
+                            on_delete=models.CASCADE
+                            )
+    
+    class Meta:
+        verbose_name='Прогноз товара'
+        verbose_name_plural='Прогнозы товара'
 
 
-class Category(models.Model):
-    """Модель категории товаров."""
-    title = models.CharField(
-        max_length=75, verbose_name='Название категории', unique=True
-    )
-    group = models.ForeignKey(
-        Group,
-        verbose_name='Группа',
-        on_delete=models.CASCADE,
-        related_name='categories',
-        to_field='title',
-    )
+class ForecastDaily(models.Model):
+    '''Модель ежедневного прогноза'''
+    sales_units = models.ForeignKey(ForecastSku,
+                                    on_delete=models.CASCADE
+                                    )
+    date = models.DateField(verbose_name='Дата')
+    target = models.PositiveIntegerField(verbose_name='Спрос(шт)')
 
     class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
-        ordering = ['title']
+        verbose_name='Ежедневный прогноз'
+        verbose_name_plural='Ежедневные прогнозы'
 
     def __str__(self):
-        return self.title
-
-
-class Subcategory(models.Model):
-    """Модель подкатегории товаров."""
-    title = models.CharField(
-        max_length=75, verbose_name='Название подкатегории', unique=True
-    )
-    category = models.ForeignKey(
-        Category,
-        verbose_name='Категория',
-        on_delete=models.CASCADE,
-        related_name='subcategories',
-        to_field='title',
-    )
-
-    class Meta:
-        verbose_name = 'Подкатегория'
-        verbose_name_plural = 'Подкатегории'
-        ordering = ['title']
-
-    def __str__(self):
-        return self.title
-
-
-class Product(models.Model):
-    """Модель продуктов."""
-    sku = models.CharField(
-        max_length=75, verbose_name='Название продукта', unique=True
-    )
-    subcategory = models.ForeignKey(
-        Subcategory,
-        verbose_name='Подкатегория',
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='products',
-        to_field='title',
-    )
-    uom = models.SmallIntegerField(
-        verbose_name='Маркер единицы измерения',
-        default=1,
-    )
-
-    class Meta:
-        verbose_name = 'Продукт'
-        verbose_name_plural = 'Продукты'
-        ordering = ['sku']
-
-    def __str__(self):
-        return self.sku
+        return f'{self.sales_units}-{self.sales_units.sku}-{self.date}-{self.target}'
