@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-3itk#l(=za7)l_$t9frwr2-69m^h4qt+smy_t5c5%bz7f9_l(5'
@@ -22,7 +21,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'api.apps.ApiConfig',
-    'categories.apps.CategoriesConfig'
+    'categories.apps.CategoriesConfig',
     'sales_forecasts.apps.SalesForecastsConfig',
     'stores.apps.StoresConfig',
     'users.apps.UsersConfig',

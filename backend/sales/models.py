@@ -1,7 +1,6 @@
-from django.db import models
-
-from stores.models import Stores
 from categories.models import Category
+from django.db import models
+from stores.models import Stores
 
 
 class Sales(models.Model):
@@ -13,12 +12,12 @@ class Sales(models.Model):
                             on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name='Продажа'
-        verbose_name_plural='Продажи'
+        verbose_name = 'Продажа'
+        verbose_name_plural = 'Продажи'
 
     def __str__(self):
         return f'{self.store} - {self.sku}'
-    
+
 
 class SalesRecord(models.Model):
     '''Модель записи продаж'''
@@ -42,8 +41,8 @@ class SalesRecord(models.Model):
                                           )
 
     class Meta:
-        verbose_name='Запись продаж'
-        verbose_name_plural='Записи продаж'
+        verbose_name = 'Запись продаж'
+        verbose_name_plural = 'Записи продаж'
 
     def __str__(self):
         return f'{self.fact}-{self.date}'

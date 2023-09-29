@@ -1,9 +1,8 @@
-from django.db import models
-from django.core.exceptions import ValidationError
-from django.utils import timezone
-
-from stores.models import Store
 from categories.models import Category
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils import timezone
+from stores.models import Store
 
 
 class Forecast(models.Model):
@@ -20,14 +19,14 @@ class Forecast(models.Model):
             raise ValidationError(
                 'Дата прогноза не может быть в прошлом'
                 )
-    
+
     class Meta:
-        verbose_name='Прогноз магазина'
-        verbose_name_plural='Прогнозы магазинов'
+        verbose_name = 'Прогноз магазина'
+        verbose_name_plural = 'Прогнозы магазинов'
 
     def __str__(self):
         return f'{self.store}-{self.forecast_date}'
-    
+
 
 class ForecastSku(models.Model):
     '''Модель прогноза товара'''
@@ -37,10 +36,10 @@ class ForecastSku(models.Model):
     sku = models.ForeignKey(Category,
                             on_delete=models.CASCADE
                             )
-    
+
     class Meta:
-        verbose_name='Прогноз товара'
-        verbose_name_plural='Прогнозы товара'
+        verbose_name = 'Прогноз товара'
+        verbose_name_plural = 'Прогнозы товара'
 
 
 class ForecastDaily(models.Model):
@@ -52,8 +51,8 @@ class ForecastDaily(models.Model):
     target = models.PositiveIntegerField(verbose_name='Спрос(шт)')
 
     class Meta:
-        verbose_name='Ежедневный прогноз'
-        verbose_name_plural='Ежедневные прогнозы'
+        verbose_name = 'Ежедневный прогноз'
+        verbose_name_plural = 'Ежедневные прогнозы'
 
     def __str__(self):
         return f'{self.sales_units}-{self.sales_units.sku}-{self.date}-{self.target}'

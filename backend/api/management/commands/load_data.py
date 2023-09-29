@@ -1,8 +1,8 @@
 from csv import DictReader
 
+from categories.models import Category, Group, Product, Subcategory
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from sales_forecasts.models import Category, Group, Product, Subcategory
 
 data_dir = settings.BASE_DIR/'initial_data'
 
