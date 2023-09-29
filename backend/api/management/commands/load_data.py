@@ -1,10 +1,9 @@
 from csv import DictReader
 
 from categories.models import Category, Group, Product, Subcategory
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
-data_dir = settings.BASE_DIR/'initial_data'
+data_dir = 'initial_data'
 
 
 csv_files = [
@@ -49,7 +48,7 @@ class Command(BaseCommand):
         )
 
     def csv_loader(self, cf):
-        csv_file = f'{data_dir}\\{cf["filename"]}'
+        csv_file = f'{data_dir}/{cf["filename"]}'
         with open(csv_file, encoding='utf-8', newline='') as csvfile:
             reader = DictReader(csvfile, fieldnames=cf['fieldnames'])
             print(f'Загрузка в таблицу модели {cf["model"].__name__}')
