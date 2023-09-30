@@ -1,7 +1,7 @@
 from categories.models import Category, Group, Subcategory
 from django.utils import timezone
 from rest_framework import serializers
-from sales.models import Sales, SalesRecord
+# from sales.models import Sales, SalesRecord
 from sales_forecasts.models import Forecast, ForecastDaily, ForecastSku
 from stores.models import Store
 from users.models import User
