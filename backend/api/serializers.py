@@ -98,7 +98,7 @@ class ForecastSerializer(serializers.ModelSerializer):
         instance.forecast_date = validated_data.get('forecast_date', instance.forecast_date)
         instance.save()
         return instance
-    
+
 
 class ForecastSkuSerializer(serializers.ModelSerializer):
     '''Сериализатор для модели прогноза товара'''
@@ -122,5 +122,3 @@ class ForecastDailySerializer(serializers.ModelSerializer):
     class Meta:
         model = ForecastDaily
         fields = '__all__'
-
-
