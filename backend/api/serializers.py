@@ -78,10 +78,12 @@ class SalesSerializer(serializers.ModelSerializer):
         read_only_fields = ('store', 'sku', 'fact')
         model = Sale
 
-    def get_fact(self, store, sku):
+    def get_fact(self, obj):
         """Возвращает данные о продажах товара в магазине по дням."""
         fact = []
-        store_sku_sales = Sale.objects.all().filter(store=store, sku=sku)
+        store_sku_sales = Sale.objects.all().filter(
+            store=obj.store, sku=obj.sku
+        )
         for sale in store_sku_sales:
             sale_fact = {
                 "date": sale.date,
