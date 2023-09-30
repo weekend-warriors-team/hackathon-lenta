@@ -1,48 +1,47 @@
-from categories.models import Category
+from categories.models import Category, Product
 from django.db import models
-from stores.models import Stores
+from stores.models import Store
 
 
-class Sales(models.Model):
-    '''Модель продажи'''
-    store = models.ForeignKey(Stores,
-                              on_delete=models.CASCADE
-                              )
-    sku = models.ForeignKey(Category,
-                            on_delete=models.CASCADE)
+class Sale(models.Model):
+    """Модель продаж товара в магазине за день."""
 
-    class Meta:
-        verbose_name = 'Продажа'
-        verbose_name_plural = 'Продажи'
-
-    def __str__(self):
-        return f'{self.store} - {self.sku}'
-
-
-class SalesRecord(models.Model):
-    '''Модель записи продаж'''
-    fact = models.ForeignKey(Sales,
-                             on_delete=models.CASCADE)
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.CASCADE,
+        verbose_name='Магазин',
+        related_name='sales',
+        to_field='store',
+        )
+    sku = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        verbose_name='Продукт',
+        related_name='sales',
+        to_field='sku',
+    )
     date = models.DateField(verbose_name='Дата')
-    sales_type = models.IntegerField(
-        verbose_name='Тип продаж'
-        )
-    sales_units = models.IntegerField(
-        verbose_name='Число проданных товаров'
-        )
-    sales_units_promo = models.IntegerField(
-        verbose_name='Число проданных промо товаров'
-        )
-    sales_rub = models.DecimalField(max_digits=10, decimal_places=2,
-                                    verbose_name='Продажи в рублях'
-                                    )
-    sales_rub_promo = models.DecimalField(max_digits=10, decimal_places=2,
-                                          verbose_name='Промо продажи в рублях'
-                                          )
+    sales_type = models.BooleanField(verbose_name='Флаг наличия промо')
+    sales_units = models.DecimalField(
+        max_digits=12, decimal_places=3,
+        verbose_name='Число проданных товаров без промо'
+    )
+    sales_units_promo = models.DecimalField(
+        max_digits=12, decimal_places=3,
+        verbose_name='Число проданных товаров с промо'
+    )
+    sales_rub = models.DecimalField(
+        max_digits=10, decimal_places=2,
+        verbose_name='Продажи в рублях'
+    )
+    sales_rub_promo = models.DecimalField(
+        max_digits=10, decimal_places=2,
+        verbose_name='Промо продажи в рублях'
+    )
 
     class Meta:
-        verbose_name = 'Запись продаж'
-        verbose_name_plural = 'Записи продаж'
+        verbose_name = 'Продажа товара за день'
+        verbose_name_plural = 'Продажи товаров за день'
 
     def __str__(self):
-        return f'{self.fact}-{self.date}'
+        return f'{self.store}-{self.sku}-{self.date}'
