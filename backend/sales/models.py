@@ -1,4 +1,4 @@
-from categories.models import Category, Product
+from categories.models import Product
 from django.db import models
 from stores.models import Store
 

@@ -2,6 +2,7 @@ from csv import DictReader
 
 from categories.models import Category, Group, Product, Subcategory
 from django.core.management.base import BaseCommand
+from stores.models import City, Division, Store
 
 data_dir = 'initial_data'
 
@@ -15,6 +16,14 @@ csv_files = [
      'fieldnames': ['pass', 'pass', 'category', 'title']},
     {'model': Product, 'filename': 'pr_df.csv',
      'fieldnames': ['sku', 'pass', 'pass', 'subcategory', 'uom']},
+    {'model': City, 'filename': 'st_df.csv',
+     'fieldnames': ['pass', 'city']},
+    {'model': Division, 'filename': 'st_df.csv',
+     'fieldnames': ['pass', 'pass', 'division']},
+    {'model': Store, 'filename': 'st_df.csv',
+     'fieldnames': [
+         'store', 'city', 'division', 'type_format', 'loc', 'size', 'is_active'
+         ]},
 ]
 
 
@@ -39,12 +48,33 @@ class Command(BaseCommand):
             category=Category.objects.filter(title=row['category']).first(),
         )
 
+
     def add_product(self, row):
         """Создает или обновляет продукт."""
         Product.objects.update_or_create(
             sku=row['sku'],
             subcategory=Subcategory.objects.filter(title=row['subcategory']).first(),
             uom=row['uom'],
+        )
+
+    def add_city(self, row):
+        """Создает или обновляет город."""
+        City.objects.update_or_create(city=row['city'])
+
+    def add_division(self, row):
+        """Создает или обновляет отдел."""
+        Division.objects.update_or_create(division=row['division'])
+
+    def add_store(self, row):
+        """Создает или обновляет магазин."""
+        Store.objects.update_or_create(
+            store=row['store'],
+            city=City.objects.filter(city=row['city']).first(),
+            division=Division.objects.filter(division=row['division']).first(),
+            type_format=row['type_format'],
+            loc=row['loc'],
+            size=row['size'],
+            is_active=row['is_active'],
         )
 
     def csv_loader(self, cf):
@@ -61,6 +91,12 @@ class Command(BaseCommand):
                 create_func = self.add_subcategory
             elif cf['model'] == Product:
                 create_func = self.add_product
+            elif cf['model'] == City:
+                create_func = self.add_city
+            elif cf['model'] == Division:
+                create_func = self.add_division
+            elif cf['model'] == Store:
+                create_func = self.add_store
 
             i, err, r = 0, 0, 0
             next(reader)
