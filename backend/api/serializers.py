@@ -1,10 +1,9 @@
-from rest_framework import serializers
-from django.utils import timezone
-
 from categories.models import Category, Group, Subcategory
+from django.utils import timezone
+from rest_framework import serializers
 from sales.models import Sales, SalesRecord
-from stores.models import Stores
-from sales_forecasts.models import Forecast, ForecastSku, ForecastDaily
+from sales_forecasts.models import Forecast, ForecastDaily, ForecastSku
+from stores.models import Store
 from users.models import User
 
 
@@ -44,35 +43,13 @@ class SubcategorySerializer(serializers.ModelSerializer):
         model = Subcategory
 
 
-class SalesSerializer(serializers.ModelSerializer):
-    '''Сериализатор для модели Sales'''
-    store = serializers.PrimaryKeyRelatedField(
-        queryset=Stores.objects.all()
-    )
-    sku = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all()
-    )
-
-    class Meta:
-        fields = ('store', 'sku')
-        model = Sales
-
-
-class SalesRecordSerializer(serializers.ModelSerializer):
-    '''Сериализатор для модели SalesRecord'''
-    class Meta:
-        fields = ('fact', 'date', 'sales_type', 'sales_units', 'sales_units_promo',
-                  'sales_rub', 'sales_rub_promo')
-        model = SalesRecord
-
-
 class StoreSerializer(serializers.ModelSerializer):
     '''Сериализатор для модели Store'''
     class Meta:
         fields = ('store_name', 'city', 'division',
                   'type_format', 'loc', 'size',
                   'is_active')
-        model = Stores
+        model = Store
 
 
 class ForecastSerializer(serializers.ModelSerializer):
