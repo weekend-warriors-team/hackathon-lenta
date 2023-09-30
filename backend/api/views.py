@@ -2,10 +2,12 @@ from categories.models import Category, Group, Product, Subcategory
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import viewsets
+from sales.models import Sale
 from stores.models import Store
 from users.models import User
 
-from .serializers import ProductSerializer, StoreSerializer, UserSerializer
+from .serializers import (ProductSerializer, SalesSerializer, StoreSerializer,
+                          UserSerializer)
 
 
 class UserViewSet(DjoserUserViewSet):
@@ -34,3 +36,12 @@ class ProductViewSet(viewsets.ModelViewSet):
     filterset_fields = [
         'subcategory', 'uom'
     ]
+
+
+class SaleViewSet(viewsets.ModelViewSet):
+    """Вьюсет для работы с продажами."""
+    http_method_names = ['get']
+    queryset = Sale.objects.all()
+    serializer_class = SalesSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['store', 'sku']
