@@ -3,7 +3,7 @@ from django.utils import timezone
 
 from categories.models import Category, Group, Subcategory
 from sales.models import Sales, SalesRecord
-from stores.models import Stores, Store
+from stores.models import Stores
 from sales_forecasts.models import Forecast, ForecastSku, ForecastDaily
 from users.models import User
 
@@ -72,7 +72,7 @@ class StoreSerializer(serializers.ModelSerializer):
         fields = ('store_name', 'city', 'division',
                   'type_format', 'loc', 'size',
                   'is_active')
-        model = Store
+        model = Stores
 
 
 class ForecastSerializer(serializers.ModelSerializer):
