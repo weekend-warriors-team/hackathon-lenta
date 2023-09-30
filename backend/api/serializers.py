@@ -1,4 +1,4 @@
-from categories.models import Category, Group, Subcategory
+from categories.models import Category, Group, Product, Subcategory
 from django.utils import timezone
 from rest_framework import serializers
 from sales.models import Sale
@@ -22,25 +22,42 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    '''Сериализатор для модели Category.'''
-    class Meta:
-        fields = ('sku', 'group', 'category', 'subcategory', 'uom')
-        model = Category
-
-
 class GroupSerializer(serializers.ModelSerializer):
-    '''Сериализатор для модели Group'''
+    '''Сериализатор для модели Group.'''
     class Meta:
-        fields = ('id', 'group')
         model = Group
+        fields = ('title',)
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    """Сериализатор для модели Category."""
+
+    group = GroupSerializer()
+
+    class Meta:
+        model = Category
+        fields = ('title', 'group')
 
 
 class SubcategorySerializer(serializers.ModelSerializer):
     '''Сериализатор для модели Subcategory'''
+
+    category = CategorySerializer()
+
     class Meta:
-        fields = ('subcategory', 'category')
         model = Subcategory
+        fields = ('title', 'category')
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    '''Сериализатор для модели Category.'''
+
+    category = serializers.CharField(source='subcategory.category.title')
+    group = serializers.CharField(source='subcategory.category.group.title')
+
+    class Meta:
+        fields = ('sku', 'group', 'category', 'subcategory', 'uom')
+        model = Product
 
 
 class StoreSerializer(serializers.ModelSerializer):
