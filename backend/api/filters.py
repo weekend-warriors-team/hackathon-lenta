@@ -1,9 +1,15 @@
-from django_filters.rest_framework import FilterSet, filters
+from django_filters.rest_framework import FilterSet as filters
 from stores.models import Stores
 from sales.models import Sales
 
 
-class StoresFilter(FilterSet):
-    '''Фильтр продаж'''
+class StoresFilter(filters.FilterSet):
+    '''Фильтр магазинов'''
     model = Stores
-    fields = ('store', 'city', 'division', 'type_format', 'loc',)
+    fields = ('store', 'city', 'division', 'type_format', 'loc')
+
+
+class SalesFilter(filters.FilterSet):
+    '''Фильтр продаж'''
+    model = Sales
+    fields = ('store', 'sku')
