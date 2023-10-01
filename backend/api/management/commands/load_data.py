@@ -48,7 +48,6 @@ class Command(BaseCommand):
             category=Category.objects.filter(title=row['category']).first(),
         )
 
-
     def add_product(self, row):
         """Создает или обновляет продукт."""
         Product.objects.update_or_create(
