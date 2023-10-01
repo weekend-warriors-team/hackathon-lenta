@@ -5,7 +5,7 @@ from .models import Sale
 
 class SaleAdmin(admin.ModelAdmin):
     list_display = ('store', 'sku', 'date')
-    search_fields = ('store', 'sku', 'date')
+    search_fields = ('sku__sku',)
     list_filter = ('store', 'sku', 'date')
 
 
