@@ -1,3 +1,12 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Sale
+
+
+class SaleAdmin(admin.ModelAdmin):
+    list_display = ('store', 'sku', 'date')
+    search_fields = ('store', 'sku', 'date')
+    list_filter = ('store', 'sku', 'date')
+
+
+admin.site.register(Sale, SaleAdmin)

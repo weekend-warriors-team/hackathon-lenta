@@ -4,7 +4,7 @@ from stores.models import Store
 
 
 class Sale(models.Model):
-    """Модель продаж товара в магазине за день."""
+    """Модель продаж продуктов."""
 
     store = models.ForeignKey(
         Store,
@@ -24,11 +24,11 @@ class Sale(models.Model):
     sales_type = models.BooleanField(verbose_name='Флаг наличия промо')
     sales_units = models.DecimalField(
         max_digits=12, decimal_places=3,
-        verbose_name='Число проданных товаров без промо'
+        verbose_name='Число проданных продуктов без промо'
     )
     sales_units_promo = models.DecimalField(
         max_digits=12, decimal_places=3,
-        verbose_name='Число проданных товаров с промо'
+        verbose_name='Число проданных продуктов с промо'
     )
     sales_rub = models.DecimalField(
         max_digits=10, decimal_places=2,
@@ -40,8 +40,8 @@ class Sale(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Продажа товара за день'
-        verbose_name_plural = 'Продажи товаров за день'
+        verbose_name = 'Продажа продукта'
+        verbose_name_plural = 'Продажи продуктов'
 
     def __str__(self):
         return f'{self.store}-{self.sku}-{self.date}'

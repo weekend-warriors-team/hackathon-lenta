@@ -41,7 +41,11 @@ class ProductViewSet(viewsets.ModelViewSet):
 class SaleViewSet(viewsets.ModelViewSet):
     """Вьюсет для работы с продажами."""
     http_method_names = ['get']
-    queryset = Sale.objects.all()
     serializer_class = SalesSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['store', 'sku']
+
+    def get_queryset(self):
+        queryset = Sale.objects.all().distinct('store', 'sku')
+        filtered_queryset = self.filter_queryset(queryset)
+        return filtered_queryset

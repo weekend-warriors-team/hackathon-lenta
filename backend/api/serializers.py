@@ -83,7 +83,7 @@ class SalesSerializer(serializers.ModelSerializer):
         fact = []
         store_sku_sales = Sale.objects.all().filter(
             store=obj.store, sku=obj.sku
-        )
+        ).order_by('date')
         for sale in store_sku_sales:
             sale_fact = {
                 "date": sale.date,
