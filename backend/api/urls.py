@@ -1,4 +1,5 @@
 from api.views import ProductViewSet, SaleViewSet, ShopViewSet, UserViewSet
+from .views import ForecastViewSet, ForecastSkuViewSet, ForecastDailyViewSet
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
@@ -9,6 +10,9 @@ router.register('users', UserViewSet, 'users')
 router.register('shops', ShopViewSet, 'shops')
 router.register('products', ProductViewSet, 'products')
 router.register('sales', SaleViewSet, 'sales')
+router.register('sales_forecasts', ForecastViewSet, basename='sales_forecasts')
+router.register('sku_forecasts', ForecastSkuViewSet, basename='sku_forecasts')
+router.register('daily_forecasts', ForecastDailyViewSet, basename='daily_forecasts')
 
 urlpatterns = [
     path('', include(router.urls)),
