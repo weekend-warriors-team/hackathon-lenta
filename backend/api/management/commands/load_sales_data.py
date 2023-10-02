@@ -31,7 +31,8 @@ class Command(BaseCommand):
             result = func(*args, **kwargs)
             end_time = time.time()
             execution_time = end_time - start_time
-            print(f"Время выполнения функции {func.__name__}: {execution_time} секунд")
+            print(f"Время выполнения функции {func.__name__}: "
+                  f"{execution_time} секунд.")
             return result
         return wrapper
 
@@ -43,7 +44,10 @@ class Command(BaseCommand):
             # Находим существующий объект продажи, если он существует
             sale = (
                 Sale.objects.filter(
-                    store=row['store'], sku=row['sku'], date=row['date']
+                    store=row['store'],
+                    sku=row['sku'],
+                    date=row['date'],
+                    sales_type=row['sales_type']
                 ).first()
             )
             if not sale:

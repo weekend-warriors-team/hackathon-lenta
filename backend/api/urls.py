@@ -1,7 +1,8 @@
 from api.views import ProductViewSet, SaleViewSet, ShopViewSet, UserViewSet
-from .views import ForecastViewSet, ForecastSkuViewSet, ForecastDailyViewSet
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
+
+from .views import ForecastDailyViewSet, ForecastSkuViewSet, ForecastViewSet
 
 app_name = 'api'
 
