@@ -26,12 +26,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+    'drf_yasg',
     'api.apps.ApiConfig',
     'categories.apps.CategoriesConfig',
     'sales_forecasts.apps.SalesForecastsConfig',
     'stores.apps.StoresConfig',
     'users.apps.UsersConfig',
-    'sales.apps.SalesConfig'
+    'sales.apps.SalesConfig',
 ]
 
 MIDDLEWARE = [
@@ -86,19 +87,19 @@ DJOSER = {
 WSGI_APPLICATION = 'forecast.wsgi.application'
 
 
-# DATABASES = {
-#      'default': {
+#DATABASES = {
+#     'default': {
 #          'ENGINE': 'django.db.backends.sqlite3', # без докера
 #          'NAME': BASE_DIR / 'db.sqlite3',
-#      }
-#  }
+#    }
+#}
 
-# DATABASES = {
+#DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3', # для пробного докера на sqlite
+#        'ENGINE': 'django.db.backends.sqlite3', # для пробного докера на sqlite
 #         'NAME': '/data/db.sqlite3',
-#     }
-# }
+#    }
+#}
 
 DATABASES = {
     'default': {
@@ -108,7 +109,7 @@ DATABASES = {
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
         'HOST': os.getenv('DB_HOST', ''),
         'PORT': os.getenv('DB_PORT', 5432)
-    }
+   }
 }
 
 

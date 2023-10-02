@@ -3,6 +3,7 @@ from .views import ForecastViewSet, ForecastSkuViewSet, ForecastDailyViewSet
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
+
 app_name = 'api'
 
 router = DefaultRouter()
@@ -13,6 +14,7 @@ router.register('sales', SaleViewSet, 'sales')
 router.register('sales_forecasts', ForecastViewSet, basename='sales_forecasts')
 router.register('sku_forecasts', ForecastSkuViewSet, basename='sku_forecasts')
 router.register('daily_forecasts', ForecastDailyViewSet, basename='daily_forecasts')
+
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Group(models.Model):
-    """Модель групы товаров."""
+    """Модель группы товаров."""
     title = models.CharField(
         max_length=75, verbose_name='Название группы', unique=True
     )
