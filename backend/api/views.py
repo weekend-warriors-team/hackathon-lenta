@@ -1,16 +1,16 @@
-from rest_framework import status
-from rest_framework.response import Response
 from categories.models import Category, Group, Product, Subcategory
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.response import Response
 from sales.models import Sale
+from sales_forecasts.models import Forecast, ForecastDaily, ForecastSku
 from stores.models import Store
 from users.models import User
-from sales_forecasts.models import Forecast, ForecastSku, ForecastDaily
 
-from .serializers import (ProductSerializer, SalesSerializer, StoreSerializer,
-                          UserSerializer, ForecastSerializer, ForecastSkuSerializer, ForecastDailySerializer)
+from .serializers import (ForecastDailySerializer, ForecastSerializer,
+                          ForecastSkuSerializer, ProductSerializer,
+                          SalesSerializer, StoreSerializer, UserSerializer)
 
 
 class UserViewSet(DjoserUserViewSet):
@@ -44,14 +44,10 @@ class ProductViewSet(viewsets.ModelViewSet):
 class SaleViewSet(viewsets.ModelViewSet):
     """Вьюсет для работы с продажами."""
     http_method_names = ['get']
+    queryset = Sale.objects.all().distinct('store', 'sku')
     serializer_class = SalesSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['store', 'sku']
-
-    def get_queryset(self):
-        queryset = Sale.objects.all().distinct('store', 'sku')
-        filtered_queryset = self.filter_queryset(queryset)
-        return filtered_queryset
 
 
 class ForecastViewSet(viewsets.ModelViewSet):
