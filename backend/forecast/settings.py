@@ -91,8 +91,8 @@ WSGI_APPLICATION = 'forecast.wsgi.application'
 #     'default': {
 #          'ENGINE': 'django.db.backends.sqlite3', # без докера
 #          'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-#}
+#      }
+# }
 
 #DATABASES = {
 #     'default': {
