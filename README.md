@@ -22,3 +22,5 @@
 - Загрузка товарной иерархии и данных о ТЦ: `docker compose exec backend python manage.py load_data`
 - Загрузка данных о продажах за год. **Т.к. в данных о продажах более 800 тыс. строк, загрузка занимает длительное время.** Например на машине с Ryzen  3 1200 и 16 Гб оперативки - около 1 часа 10 минут. Команда:  `docker compose exec backend python manage.py load_sales_data`
 - Загрузка данных с прогнозом: `docker compose exec backend python manage.py load_forecast_data`
+
+### В дальнейшем можно запускать проект командой `docker compose stop && docker compose up --build`
