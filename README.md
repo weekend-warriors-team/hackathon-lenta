@@ -5,6 +5,15 @@
 
  Краткая инструкция по запуску:
  - скачать проект на локальную машину `git clone git@github.com:weekend-warriors-team/hackathon-lenta.git`
+ - в директории /hackathon-lenta создать файл `.env` с таким содержанием:
+   ```
+      POSTGRES_USER=django_user
+      POSTGRES_PASSWORD=yourpassword
+      POSTGRES_DB=django
+      DB_HOST=db
+      DB_PORT=5432
+   ```
+
  - в терминале перейти в директорию с проектом:  `cd <путь к проекту>/hackathon-lenta`
  - в директории проекта `/hackathon-lenta` выполнить команду `docker compose stop && docker compose up --build`
  - дождаться сборки и запуска контейнеров с проектом
