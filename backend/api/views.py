@@ -8,8 +8,9 @@ from sales_forecasts.models import Forecast
 from stores.models import Store
 from users.models import User
 
-from .serializers import (ProductSerializer, SalesSerializer, StoreSerializer,
-                          UserSerializer)
+from .filters import ForecastFilter
+from .serializers import (ForecastSerializer, ProductSerializer,
+                          SalesSerializer, StoreSerializer, UserSerializer)
 
 
 class UserViewSet(DjoserUserViewSet):
@@ -47,6 +48,18 @@ class SaleViewSet(viewsets.ModelViewSet):
     serializer_class = SalesSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['store', 'sku']
+
+
+class ForecastViewSet(viewsets.ModelViewSet):
+    """Вьюсет для работы с прогнозами."""
+    http_method_names = ['get']
+    queryset = (
+        Forecast.objects.all().select_related('store', 'sku')
+        .distinct('store', 'sku', 'forecast_date').order_by('forecast_date')
+    )
+    serializer_class = ForecastSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ForecastFilter
 
 
 # class ForecastViewSet(viewsets.ModelViewSet):

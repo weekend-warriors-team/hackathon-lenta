@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+
 from categories.models import Category, Group, Product, Subcategory
 from django.utils import timezone
 from rest_framework import serializers
@@ -95,6 +97,27 @@ class SalesSerializer(serializers.ModelSerializer):
             }
             fact.append(sale_fact)
         return fact
+
+
+class ForecastSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели прогноза данных."""
+    forecast = serializers.SerializerMethodField()
+
+    class Meta:
+        fields = ('store', 'sku', 'forecast_date', 'forecast')
+        model = Forecast
+
+    def get_forecast(self, obj):
+        """Возвращает данные о прогнозе продаж по днямю"""
+        forecasts = {}
+        store_sku_forecasts = Forecast.objects.all().filter(
+            store=obj.store,
+            sku=obj.sku,
+            forecast_date=obj.forecast_date
+        )
+        for forecast in store_sku_forecasts:
+            forecasts[forecast.date.strftime('%Y-%m-%d')] = forecast.target
+        return forecasts
 
 
 # class ForecastSerializer(serializers.ModelSerializer):

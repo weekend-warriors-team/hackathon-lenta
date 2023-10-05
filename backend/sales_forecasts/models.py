@@ -38,6 +38,7 @@ class Forecast(models.Model):
     class Meta:
         verbose_name = 'Прогноз продажи продукта'
         verbose_name_plural = 'Прогнозы продаж'
+        ordering = ['forecast_date', 'store', 'sku', 'date']
 
     def __str__(self):
         return f'{self.store}-{self.sku}-{self.date}'

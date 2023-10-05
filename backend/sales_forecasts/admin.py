@@ -12,4 +12,3 @@ class ForecastAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Forecast, ForecastAdmin)
-
