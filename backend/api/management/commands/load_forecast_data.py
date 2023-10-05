@@ -11,7 +11,7 @@ from .time_counter import calculate_execution_time
 data_dir = 'initial_data'
 
 csv_files = [
-    {'model': Forecast, 'filename': 'sales_submission_test.csv',
+    {'model': Forecast, 'filename': 'sales_submission.csv',
      'fieldnames': ['store', 'sku', 'date', 'target']},
 ]
 
