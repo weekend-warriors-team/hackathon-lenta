@@ -4,12 +4,12 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from sales.models import Sale
-from sales_forecasts.models import Forecast, ForecastDaily, ForecastSku
+from sales_forecasts.models import Forecast
 from stores.models import Store
 from users.models import User
 
-from .serializers import (ForecastDailySerializer, ForecastSerializer,
-                          ForecastSkuSerializer, ProductSerializer,
+from .filters import ForecastFilter
+from .serializers import (ForecastSerializer, ProductSerializer,
                           SalesSerializer, StoreSerializer, UserSerializer)
 
 
@@ -51,80 +51,12 @@ class SaleViewSet(viewsets.ModelViewSet):
 
 
 class ForecastViewSet(viewsets.ModelViewSet):
-    '''Вьюсет для работы с прогнозами'''
-    queryset = Forecast.objects.all()
+    """Вьюсет для работы с прогнозами."""
+    http_method_names = ['get']
+    queryset = (
+        Forecast.objects.all().select_related('store', 'sku')
+        .distinct('store', 'sku', 'forecast_date').order_by('forecast_date')
+    )
     serializer_class = ForecastSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['store', 'forecast_date']
-
-    def list(self, request):
-        forecasts = self.queryset
-        serializer = self.serializer_class(forecasts, many=True)
-        return Response(serializer.data)
-
-    def create(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def retrieve(self, request, pk=None):
-        try:
-            forecast = self.queryset.get(pk=pk)
-        except Forecast.DoesNotExist:
-            return Response({'error': 'Прогноз не найден'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = self.serializer_class(forecast)
-        return Response(serializer.data)
-
-    
-class ForecastSkuViewSet(viewsets.ModelViewSet):
-    '''Вьюсет прогнозов товаров'''
-    queryset = ForecastSku.objects.all()
-    serializer_class = ForecastSkuSerializer
-
-    def list(self, request):
-        forecasts_sku = self.queryset
-        serializer = self.serializer_class(forecasts_sku, many=True)
-        return Response(serializer.data)
-
-    def create(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def retrieve(self, request, pk=None):
-        try:
-            forecast_sku = self.queryset.get(pk=pk)
-        except ForecastSku.DoesNotExist:
-            return Response({'error': 'Прогноз товара не найден'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = self.serializer_class(forecast_sku)
-        return Response(serializer.data)
-
-
-class ForecastDailyViewSet(viewsets.ModelViewSet):
-    '''Вьюсет ежедневных прогнозов'''
-    queryset = ForecastDaily.objects.all()
-    serializer_class = ForecastDailySerializer
-
-    def list(self, request):
-        forecasts_daily = self.queryset
-        serializer = self.serializer_class(forecasts_daily, many=True)
-        return Response(serializer.data)
-
-    def create(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def retrieve(self, request, pk=None):
-        try:
-            forecast_daily = self.queryset.get(pk=pk)
-        except ForecastDaily.DoesNotExist:
-            return Response({'error': 'Ежедневный прогноз не найден'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = self.serializer_class(forecast_daily)
-        return Response(serializer.data)
+    filterset_class = ForecastFilter

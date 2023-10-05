@@ -1,8 +1,7 @@
 from categories.models import Category, Group, Product, Subcategory
-from django.utils import timezone
 from rest_framework import serializers
 from sales.models import Sale
-from sales_forecasts.models import Forecast, ForecastDaily, ForecastSku
+from sales_forecasts.models import Forecast
 from stores.models import Store
 from users.models import User
 
@@ -98,46 +97,21 @@ class SalesSerializer(serializers.ModelSerializer):
 
 
 class ForecastSerializer(serializers.ModelSerializer):
-    '''Сериализатор для модели прогноза данных'''
+    """Сериализатор для модели прогноза данных."""
+    forecast = serializers.SerializerMethodField()
+
     class Meta:
+        fields = ('store', 'sku', 'forecast_date', 'forecast')
         model = Forecast
-        fields = ['id', 'store', 'forecast_date']
 
-    def validate(self, data):
-        if data['forecast_date'] < timezone.now().date():
-            raise serializers.ValidationError('Дата прогноза не может быть в прошлом')
-        return data
-
-    def create(self, validated_data):
-        forecast = Forecast.objects.create(**validated_data)
-        return forecast
-
-    def update(self, instance, validated_data):
-        instance.store = validated_data.get('store', instance.store)
-        instance.forecast_date = validated_data.get('forecast_date', instance.forecast_date)
-        instance.save()
-        return instance
-
-
-class ForecastSkuSerializer(serializers.ModelSerializer):
-    '''Сериализатор для модели прогноза товара'''
-    class Meta:
-        model = ForecastSku
-        fields = ['id', 'forecast', 'sku']
-
-    def create(self, validated_data):
-        forecast_sku = ForecastSku.objects.create(**validated_data)
-        return forecast_sku
-
-    def update(self, instance, validated_data):
-        instance.forecast = validated_data.get('forecast', instance.forecast)
-        instance.sku = validated_data.get('sku', instance.sku)
-        instance.save()
-        return instance
-
-
-class ForecastDailySerializer(serializers.ModelSerializer):
-    '''Сериализатор для модели ежедневного прогноза'''
-    class Meta:
-        model = ForecastDaily
-        fields = '__all__'
+    def get_forecast(self, obj):
+        """Возвращает данные о прогнозе продаж по днямю"""
+        forecasts = {}
+        store_sku_forecasts = Forecast.objects.all().filter(
+            store=obj.store,
+            sku=obj.sku,
+            forecast_date=obj.forecast_date
+        )
+        for forecast in store_sku_forecasts:
+            forecasts[forecast.date.strftime('%Y-%m-%d')] = forecast.target
+        return forecasts
