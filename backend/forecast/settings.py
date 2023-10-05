@@ -89,19 +89,19 @@ DJOSER = {
 WSGI_APPLICATION = 'forecast.wsgi.application'
 
 
-#DATABASES = {
-#     'default': {
-#          'ENGINE': 'django.db.backends.sqlite3', # без докера
-#          'NAME': BASE_DIR / 'db.sqlite3',
-#      }
+# DATABASES = {
+#      'default': {
+#           'ENGINE': 'django.db.backends.sqlite3', # без докера
+#           'NAME': BASE_DIR / 'db.sqlite3',
+#       }
 # }
 
-#DATABASES = {
-#     'default': {
-#        'ENGINE': 'django.db.backends.sqlite3', # для пробного докера на sqlite
-#         'NAME': '/data/db.sqlite3',
-#    }
-#}
+# DATABASES = {
+#      'default': {
+#         'ENGINE': 'django.db.backends.sqlite3', # для пробного докера на sqlite
+#          'NAME': '/data/db.sqlite3',
+#     }
+# }
 
 DATABASES = {
     'default': {
