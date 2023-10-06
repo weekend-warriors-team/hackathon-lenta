@@ -3,8 +3,9 @@ import csv
 from categories.models import Category, Group, Product, Subcategory
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework import status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from sales.models import Sale
 from sales_forecasts.models import Forecast
@@ -60,21 +61,28 @@ class SaleViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['store', 'sku']
 
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    @action(
+            detail=False, methods=['get'], permission_classes=[IsAuthenticated]
+    )
     def sales_data_to_file(self, request):
         """Скачивает данные о продажах в csv."""
-        file_name = '/uploaded_data/' + request.GET.get('file_name')
-        queryset = Sale.objects.all()
+        file_name = '/backend_static/' + request.GET.get('file_name') + '.csv'
+        queryset = Sale.objects.all().order_by('store', 'sku', 'date')
         with open(file_name, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(sales_headers)
-            fields = Sale._meta.get_fields()  # список полей модели Sale
+            # получаем список полей модели Sale
+            fields = [
+                field for field in Sale._meta.get_fields()
+                if field.name != 'id'
+            ]
             rows = []
             counter = 0
             for sale in queryset:
                 rows.append(
                     [
-                        getattr(sale, field.name) for field in fields
+                        getattr(sale, field.name) if field.name != 'sales_type'
+                        else int(getattr(sale, field.name)) for field in fields
                     ]
                 )
                 counter += 1

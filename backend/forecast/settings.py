@@ -139,6 +139,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+TIMEOUT = 7200
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'collected_static'
