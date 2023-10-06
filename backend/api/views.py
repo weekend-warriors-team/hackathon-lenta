@@ -1,7 +1,10 @@
+import csv
+
 from categories.models import Category, Group, Product, Subcategory
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from sales.models import Sale
 from sales_forecasts.models import Forecast
@@ -11,6 +14,14 @@ from users.models import User
 from .filters import ForecastFilter
 from .serializers import (ForecastSerializer, ProductSerializer,
                           SalesSerializer, StoreSerializer, UserSerializer)
+
+sales_headers = [
+    'st_id', 'pr_sku_id', 'date', 'pr_sales_type_id',
+    'pr_sales_in_units', 'pr_promo_sales_in_units',
+    'pr_sales_in_rub', 'pr_promo_sales_in_rub'
+]
+
+MAX_ROWS = 1000
 
 
 class UserViewSet(DjoserUserViewSet):
@@ -48,6 +59,32 @@ class SaleViewSet(viewsets.ModelViewSet):
     serializer_class = SalesSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['store', 'sku']
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def sales_data_to_file(self, request):
+        """Скачивает данные о продажах в csv."""
+        file_name = '/uploaded_data/' + request.GET.get('file_name')
+        queryset = Sale.objects.all()
+        with open(file_name, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(sales_headers)
+            fields = Sale._meta.get_fields()  # список полей модели Sale
+            rows = []
+            counter = 0
+            for sale in queryset:
+                rows.append(
+                    [
+                        getattr(sale, field.name) for field in fields
+                    ]
+                )
+                counter += 1
+                if len(rows) >= MAX_ROWS:
+                    writer.writerows(rows)
+                    rows = []
+            if rows:
+                writer.writerows(rows)
+        print(f'Продажи записаны в файл {file_name}. Всего строк: {counter}')
+        return Response(status=status.HTTP_200_OK)
 
 
 class ForecastViewSet(viewsets.ModelViewSet):
