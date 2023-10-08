@@ -1,5 +1,5 @@
-from api.views import (ForecastViewSet, ProductViewSet, SaleViewSet,
-                       ShopViewSet, UserViewSet)
+from api.views import (DataToFileViewSet, ForecastViewSet, ProductViewSet,
+                       SaleViewSet, ShopViewSet, UserViewSet)
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
@@ -11,6 +11,7 @@ router.register('shops', ShopViewSet, 'shops')
 router.register('products', ProductViewSet, 'products')
 router.register('sales', SaleViewSet, 'sales')
 router.register('forecast', ForecastViewSet, 'forecast')
+router.register('data_to_file', DataToFileViewSet, 'data_to_file')
 
 urlpatterns = [
     path('', include(router.urls)),
