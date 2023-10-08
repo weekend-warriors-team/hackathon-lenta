@@ -105,7 +105,7 @@ class ForecastSerializer(serializers.ModelSerializer):
         model = Forecast
 
     def get_forecast(self, obj):
-        """Возвращает данные о прогнозе продаж по днямю"""
+        """Возвращает данные о прогнозе продаж по дням"""
         forecasts = {}
         store_sku_forecasts = Forecast.objects.all().filter(
             store=obj.store,
