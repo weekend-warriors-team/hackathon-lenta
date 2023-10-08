@@ -141,7 +141,30 @@ POST запрос вида:
         "is_active": true
     },
 ```
-* ```/api/v1/sales/```  Get-запрос – получение списка продаж за год.
+* ```/api/v1/sales/?store=16a5cdae362b8d27a1d8f8c7b78b4330&sku=0094042bfeae507dc7f62acc8e5ed03a/```  Get-запрос – получение списка продаж за год по конкретному магазину.
+```json
+[
+    {
+        "store": "16a5cdae362b8d27a1d8f8c7b78b4330",
+        "sku": "0094042bfeae507dc7f62acc8e5ed03a",
+        "fact": [
+            {
+                "date": "2022-08-01",
+                "sales_type": true,
+                "sales_units": 2.0,
+                "sales_units_promo": 2.0,
+                "sales_rub": 383.0,
+                "sales_rub_promo": 383.0
+            },
+            {
+                "date": "2022-08-01",
+                "sales_type": false,
+                "sales_units": 4.0,
+                "sales_units_promo": 0.0,
+                "sales_rub": 712.0,
+                "sales_rub_promo": 0.0
+            },
+```
 * ```/api/v1/forecast/```  Get-запрос – получение списка прогнозируемых товаров.
 
 ## Команда разработки:
