@@ -1,0 +1,7 @@
+catboost==1.2.2
+Flask==2.2.5
+holidays==0.34
+lightgbm==4.0.0
+numpy==1.23.5
+pandas==1.5.3
+prophet==1.1.4

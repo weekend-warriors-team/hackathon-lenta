@@ -1,4 +1,6 @@
 FROM python
-COPY . .
+COPY . /app
+
 RUN pip install -r requirements.txt
-CMD ["python", "model.ipynb"]
+
+CMD ["python", "app.py"]
