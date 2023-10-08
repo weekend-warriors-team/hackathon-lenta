@@ -1,6 +1,6 @@
 import csv
 
-from api.services import sales_data_to_file
+from api.services import all_data_to_files
 from categories.models import Category, Group, Product, Subcategory
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
@@ -91,4 +91,4 @@ class DataToFileViewSet(viewsets.ViewSet):
 
     def list(self, request):
         """Скачивает данные о продажах в csv."""
-        return sales_data_to_file(request)
+        return all_data_to_files(request)
