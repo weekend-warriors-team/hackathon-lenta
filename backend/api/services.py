@@ -1,6 +1,6 @@
 import csv
 
-from categories.models import Category, Group, Product, Subcategory
+from categories.models import Product
 from django.db import models
 from django.http import HttpResponse
 from rest_framework import status
@@ -84,7 +84,13 @@ def data_to_file(cf, request):
                 rows = []
         if rows:
             writer.writerows(rows)
-    message = f'Продажи записаны в файл {file_name}. Всего строк: {counter}'
+    if model == Sale:
+        subject = 'Продажи'
+    elif model == Store:
+        subject = 'Магазины'
+    elif model == Product:
+        subject = 'Продукты'
+    message = f'{subject} записаны в файл {file_name}. Всего строк: {counter}. '
     print(message)
     return message
 
