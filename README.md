@@ -19,7 +19,9 @@
 - Python 3.11
 - Django 4.2
 - Django REST framework 3.14
+- Djoser 2.2
 - Gunicorn 21.2
+- Nginx
 - Swagger
 - Docker
 
