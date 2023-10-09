@@ -11,7 +11,7 @@ from sales.models import Sale
 from sales_forecasts.models import Forecast
 from stores.models import Store
 
-data_dir = '/backend_static/'
+data_dir = '/backend_static'
 
 sales_headers = [
     'st_id', 'pr_sku_id', 'date', 'pr_sales_type_id',
@@ -103,7 +103,9 @@ def data_to_file(cf, request):
         subject = 'Магазины'
     elif model == Product:
         subject = 'Продукты'
-    message = f'{subject} записаны в файл {file_name}. Всего строк: {counter}. '
+    message = (
+        f'{subject} записаны в файл {file_name}. Всего строк: {counter}. '
+    )
     print(message)
     return message
 
@@ -184,4 +186,4 @@ def forecasts_loader():
         print(
             f'Всего: {i} строк. Загружено или обновлено: {r} строк. '
             f'Ошибки: {err} строк.')
-        return HttpResponse(status=status.HTTP_200_OK)
+        return HttpResponse('Прогноз загружен.', status=status.HTTP_200_OK)
