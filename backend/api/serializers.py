@@ -102,6 +102,7 @@ class ForecastSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('store', 'sku', 'forecast_date', 'forecast')
+        read_only_fields = ('store', 'sku', 'forecast_date', 'forecast')
         model = Forecast
 
     def get_forecast(self, obj):

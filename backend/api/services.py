@@ -1,11 +1,17 @@
 import csv
+import datetime
+from csv import DictReader
 
 from categories.models import Product
 from django.db import models
 from django.http import HttpResponse
+from django_bulk_update.helper import bulk_update
 from rest_framework import status
 from sales.models import Sale
+from sales_forecasts.models import Forecast
 from stores.models import Store
+
+data_dir = '/backend_static'
 
 sales_headers = [
     'st_id', 'pr_sku_id', 'date', 'pr_sales_type_id',
@@ -32,7 +38,14 @@ csv_files = [
      'headers': products_headers}
 ]
 
-MAX_ROWS = 1000
+csv_file_forecast = {
+    'model': Forecast,
+    'filename': 'sales_submission_out.csv',
+    'fieldnames': ['pass', 'store', 'sku', 'date', 'target']
+}  # pass - заглушка, пока DS не сменят структуру файла
+
+
+MAX_ROWS = 1000  # Максимальное количество строк для одновременной загрузки
 
 
 def data_to_file(cf, request):
@@ -90,7 +103,9 @@ def data_to_file(cf, request):
         subject = 'Магазины'
     elif model == Product:
         subject = 'Продукты'
-    message = f'{subject} записаны в файл {file_name}. Всего строк: {counter}. '
+    message = (
+        f'{subject} записаны в файл {file_name}. Всего строк: {counter}. '
+    )
     print(message)
     return message
 
@@ -102,3 +117,73 @@ def all_data_to_files(request):
         print('Идет выгрузка данных.')
         messages.append(data_to_file(cf, request))
     return HttpResponse(messages, status=status.HTTP_200_OK)
+
+
+def add_forecast(rows):
+    """Создает или обновляет записи о прогнозе продажи товара."""
+    forecasts = []
+    forecasts_for_update = []
+    current_date = datetime.date.today().strftime('%Y-%m-%d')
+    for row in rows:
+        # Находим существующий объект прогноза, если он существует
+        forecast = (
+            Forecast.objects.filter(
+                forecast_date=current_date,
+                store=row['store'],
+                sku=row['sku'],
+                date=row['date']
+            ).first()
+        )
+        if not forecast:
+            # Создаем новый объект прогноза
+            forecast = Forecast(
+                forecast_date=current_date,
+                store=Store.objects.filter(store=row['store']).first(),
+                sku=Product.objects.filter(sku=row['sku']).first(),
+                date=row['date'],
+                target=row['target']
+            )
+            forecasts.append(forecast)
+        else:
+            # Обновляем существующий объект прогноза
+            forecast.target = row['target']
+            forecasts_for_update.append(forecast)
+    Forecast.objects.bulk_create(forecasts)
+    bulk_update(forecasts_for_update, update_fields=['target'])
+
+
+def forecasts_loader():
+    """Загружает или обновляет записи о прогнозе продаж товаров в БД."""
+    csv_file = f'{data_dir}/{csv_file_forecast["filename"]}'
+    with open(csv_file, encoding='utf-8', newline='') as csvfile:
+        reader = DictReader(
+            csvfile, fieldnames=csv_file_forecast['fieldnames']
+        )
+
+        create_func = add_forecast
+
+        i, err, r = 0, 0, 0
+        next(reader)
+        rows = []
+        for row in reader:
+            try:
+                rows.append(row)
+                if len(rows) >= MAX_ROWS:
+                    create_func(rows)
+                    r += len(rows)
+                    rows = []
+            except Exception as error:
+                print(row)
+                print(
+                    f'Ошибка записи в таблицу модели '
+                    f'{csv_file_forecast["model"].__name__}, '
+                    f'{str(error)}')
+                err += 1
+            i += 1
+        if rows:
+            create_func(rows)
+            r += len(rows)
+        print(
+            f'Всего: {i} строк. Загружено или обновлено: {r} строк. '
+            f'Ошибки: {err} строк.')
+        return HttpResponse('Прогноз загружен.', status=status.HTTP_200_OK)

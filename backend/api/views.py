@@ -1,10 +1,9 @@
-import csv
-
-from api.services import all_data_to_files
+from api.services import all_data_to_files, forecasts_loader
 from categories.models import Product
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from sales.models import Sale
 from sales_forecasts.models import Forecast
 from stores.models import Store
@@ -64,6 +63,18 @@ class ForecastViewSet(viewsets.ModelViewSet):
     serializer_class = ForecastSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ForecastFilter
+
+    @action(methods=['post'], detail=False,)
+    def add_daily_forecast(self, request):
+        """Загружает в БД данные о прогнозе продаж по дням."""
+        return forecasts_loader()
+
+    def allow_methods(self, request, *args, **kwargs):
+        """Разрешает метод 'POST' только для добавления
+        прогноза продаж из файла csv."""
+        if self.action == 'add_daily_forecast':
+            return ['post']
+        return super().allow_methods(request, *args, **kwargs)
 
 
 class DataToFileViewSet(viewsets.ViewSet):
