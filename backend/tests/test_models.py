@@ -225,7 +225,7 @@ class ForecastTestCase(TestCase):
         )
 
     def test_forecast_str(self):
-        self.assertEqual(str(self.forecast), 'Test Store-Test Product-2022-01-02')
+        self.assertEqual(str(self.forecast), 'Test Store-Test Product-2023-07-19')
 
     def test_forecast_verbose_name(self):
         self.assertEqual(Forecast._meta.verbose_name, 'Прогноз продажи продукта')
@@ -241,7 +241,7 @@ class ForecastTestCase(TestCase):
         self.assertEqual(self.forecast.sku, self.product)
 
     def test_forecast_date(self):
-        self.assertEqual(str(self.forecast.date), '2022-01-02')
+        self.assertEqual(str(self.forecast.date), '2023-07-19')
 
     def test_forecast_target(self):
         self.assertEqual(self.forecast.target, 10)
