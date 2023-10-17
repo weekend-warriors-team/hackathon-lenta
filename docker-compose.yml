@@ -27,17 +27,16 @@ services:
       - static:/staticfiles/
     ports:
       - 8000:80
-  ds:
-    build: ./ds/
-    volumes:
-      - shared:/shared
-    depends_on:
-      - gateway
+  # ds:
+  #   build: ./ds/
+  #   volumes:
+  #     - shared:/shared
+  #   depends_on:
+  #     - gateway
   scheduler:
-    build: ./sheduler/
+    build: ./scheduler/
     env_file: .env
     volumes:
       - shared:/shared
     depends_on:
-      - ds
       - backend
