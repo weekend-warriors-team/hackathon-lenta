@@ -11,7 +11,7 @@ from sales.models import Sale
 from sales_forecasts.models import Forecast
 from stores.models import Store
 
-data_dir = '/backend_static'
+data_dir = '/shared'
 
 sales_headers = [
     'st_id', 'pr_sku_id', 'date', 'pr_sales_type_id',
@@ -65,7 +65,7 @@ def data_to_file(cf, request):
             'subcategory__category'
         )
     # добавляем путь и расширение файла
-    file_name = '/backend_static/' + file_name + '.csv'
+    file_name = f'{data_dir}/{file_name}.csv'
     with open(file_name, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(cf['headers'])

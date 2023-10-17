@@ -3,6 +3,8 @@ version: '3'
 volumes:
   pg_data:
   static:
+  shared:
+    driver: local
 
 services:
   db:
@@ -15,11 +17,27 @@ services:
     env_file: .env
     depends_on:
       - db
+      - gateway
     volumes:
       - static:/backend_static
+      - shared:/shared
   gateway:
     build: ./gateway/
     volumes:
       - static:/staticfiles/
     ports:
       - 8000:80
+  ds:
+    build: ./ds/
+    volumes:
+      - shared:/shared
+    depends_on:
+      - gateway
+  scheduler:
+    build: ./sheduler/
+    env_file: .env
+    volumes:
+      - shared:/shared
+    depends_on:
+      - ds
+      - backend
