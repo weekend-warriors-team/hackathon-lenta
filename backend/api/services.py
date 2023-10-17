@@ -1,5 +1,6 @@
 import csv
 import datetime
+import shutil
 from csv import DictReader
 
 from categories.models import Product
@@ -62,11 +63,12 @@ def data_to_file(cf, request):
         file_name = request.GET.get('products_file_name', cf.get('filename'))
         queryset = Product.objects.all().order_by('sku').select_related(
             'subcategory__category__group',
-            'subcategory__category'
+            'subcategory__category',
+            'subcategory',
         )
     # добавляем путь и расширение файла
-    file_name = f'{data_dir}/{file_name}.csv'
-    with open(file_name, 'w', newline='') as csvfile:
+    full_path = f'{data_dir}/{file_name}.csv'
+    with open(full_path, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(cf['headers'])
         fields = []
@@ -104,8 +106,12 @@ def data_to_file(cf, request):
     elif model == Product:
         subject = 'Продукты'
     message = (
-        f'{subject} записаны в файл {file_name}. Всего строк: {counter}. '
+        f'{subject} записаны в файл {file_name}.csv. Всего строк: {counter}. '
     )
+    # Копируем созданный файл с временной меткой для сохранения истории
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    copy_filename = f'{data_dir}/{file_name}_{timestamp}.csv'
+    shutil.copy(full_path, copy_filename)
     print(message)
     return message
 
