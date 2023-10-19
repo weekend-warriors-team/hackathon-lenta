@@ -17,12 +17,13 @@ services:
     env_file: .env
     depends_on:
       - db
-      - gateway
     volumes:
       - static:/backend_static
       - shared:/shared
   gateway:
     build: ./gateway/
+    depends_on:
+      - backend
     volumes:
       - static:/staticfiles/
     ports:
