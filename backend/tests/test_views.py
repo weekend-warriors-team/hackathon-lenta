@@ -8,7 +8,7 @@ from sales.models import Sale
 from stores.models import Store
 
 
-class ProductViewAPITestCase(TestCase):
+class ProductViewAPITest(TestCase):
     '''Тестирование вьюсета для работы с продуктами'''
     def setUp(self):
         self.client = APIClient()
@@ -43,7 +43,7 @@ class ProductViewAPITestCase(TestCase):
         self.assertEqual(len(response.data), 1)
 
 
-class ShopViewAPITestCase(TestCase):
+class ShopViewAPITest(TestCase):
     '''Тестирование вьюсета для работы с магазинами '''
     def setUp(self):
         self.client = APIClient()
@@ -56,7 +56,7 @@ class ShopViewAPITestCase(TestCase):
             'size': 1,
             'is_active': 'True'
         }
-        self.store = Store.objects.create(**self.data)
+        self.store = Store.objects.create(**self.store_data)
 
     def test_get_store_list(self):
         response = self.client.get('/api/v1/shops')
@@ -90,7 +90,7 @@ class ShopViewAPITestCase(TestCase):
         self.assertEqual(len(response.data), 1)
 
 
-class SaleViewAPITestCase(TestCase):
+class SaleViewAPITest(TestCase):
     '''Тестирование вьюсета для работы с продажами'''
 
     def setUp(self):
@@ -125,7 +125,7 @@ class SaleViewAPITestCase(TestCase):
         self.assertEqual(response.data["sku"], "Test SKU")
 
     
-    class ForecastViewAPITestCase(TestCase):
+    class ForecastViewAPITest(TestCase):
         '''Тестирование вьюсета для работы с прогнозами'''
 
     def setUp(self):
