@@ -45,8 +45,8 @@ class Store(models.Model):
     )
     type_format = models.SmallIntegerField()
     loc = models.SmallIntegerField()
-    size = models.SmallIntegerField(null=True)
-    is_active = models.BooleanField()
+    size = models.SmallIntegerField()
+    is_active = models.BooleanField(null=True)
 
     class Meta:
         verbose_name = 'Магазин'
